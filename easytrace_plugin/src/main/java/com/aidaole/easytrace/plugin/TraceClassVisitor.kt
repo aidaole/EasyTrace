@@ -16,9 +16,25 @@ class TraceClassVisitor(
         signature: String?,
         exceptions: Array<out String>?
     ): MethodVisitor {
-        println("[EasyTrace] Visiting method: $className#$name$descriptor")
         val methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions)
-        return methodVisitor
-        // TODO: 后续我们会在这里添加 TraceMethodVisitor 来实现方法跟踪
+        
+        // 跳过以下方法：
+        // 1. 构造方法
+        // 2. 静态初始化方法
+        // 3. 合成方法（编译器生成的方法）
+        if (name == "<init>" || 
+            name == "<clinit>" || 
+            access and Opcodes.ACC_SYNTHETIC != 0) {
+            return methodVisitor
+        }
+
+        println("[EasyTrace] Adding trace to method: $className#$name$descriptor")
+        return TraceMethodVisitor(
+            methodVisitor,
+            access,
+            className,
+            name,
+            descriptor
+        )
     }
 } 
