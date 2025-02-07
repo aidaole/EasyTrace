@@ -1,6 +1,8 @@
 plugins {
     id 'java-library'
-    alias(libs.plugins.jetbrains.kotlin.jvm)
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
 }
 
 java {
@@ -10,6 +12,37 @@ java {
 
 kotlin {
     compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation 'org.ow2.asm:asm:9.5'
+    implementation 'org.ow2.asm:asm-commons:9.5'
+    implementation 'com.android.tools.build:gradle:8.2.0'
+}
+
+group = 'com.aidaole.easytrace'
+version = '1.0.0'
+
+gradlePlugin {
+    plugins {
+        easyTrace {
+            id = 'com.aidaole.easytrace'
+            implementationClass = 'com.aidaole.easytrace.plugin.EasyTracePlugin'
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+            
+            from components.java
+        }
     }
 }
