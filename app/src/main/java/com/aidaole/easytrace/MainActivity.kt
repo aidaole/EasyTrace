@@ -16,5 +16,13 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        fabnic(20)
+    }
+
+    fun fabnic(n: Int): Int {
+        if (n == 1 || n == 2) {
+            return 1
+        }
+        return fabnic(n - 1) + fabnic(n - 2)
     }
 }
