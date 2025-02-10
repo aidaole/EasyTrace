@@ -16,15 +16,8 @@ class EasyTracePlugin : Plugin<Project> {
                 TraceClassVisitorFactory::class.java,
                 InstrumentationScope.ALL
             ) { params ->
-                // 使用扩展中的配置，如果没有配置则使用默认值
-                val packages = if (extension.includePackages.isEmpty()) {
-                    print("插桩的包名list: 为空")
-                    listOf("")
-                } else {
-                    print("插桩的包名list: ${extension.includePackages}")
-                    extension.includePackages
-                }
-                params.includePackages.set(packages)
+                params.includePackages.set(extension.includePackages)
+                params.includeClasses.set(extension.includeClasses)
             }
         }
     }

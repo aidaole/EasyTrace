@@ -7,4 +7,7 @@ import org.gradle.api.tasks.Input
 interface TraceParameters : InstrumentationParameters {
     @get:Input
     val includePackages: ListProperty<String>
+    
+    @get:Input
+    val includeClasses: ListProperty<String>
 } 
