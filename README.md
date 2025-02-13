@@ -26,7 +26,7 @@
 ``` 
 buildscript {
     dependencies {
-        classpath("com.github.aidaole:EasyTrace:0.0.9")
+        classpath("com.github.aidaole:EasyTrace:1.0.0")
     }
 }
 ```
