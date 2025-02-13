@@ -1,0 +1,37 @@
+buffers: {
+    size_kb: 655360
+    fill_policy: DISCARD
+}
+
+data_sources: {
+    config {
+        name: "linux.ftrace"   # 使用 Linux 的 ftrace 作为数据源
+        ftrace_config {
+            # 系统调度相关事件
+            ftrace_events: "sched/sched_switch"         # 进程切换事件
+            ftrace_events: "power/suspend_resume"       # 电源状态变化事件
+            ftrace_events: "sched/sched_wakeup"        # 进程唤醒事件
+            ftrace_events: "sched/sched_process_exit"   # 进程退出事件
+            ftrace_events: "sched/sched_process_free"   # 进程释放事件
+            ftrace_events: "task/task_newtask"         # 新任务创建事件
+            ftrace_events: "task/task_rename"          # 任务重命名事件
+            ftrace_events: "ftrace/print"              # ftrace 打印事件
+
+            # Android 系统跟踪类别
+            atrace_categories: "gfx"      # 图形相关
+            atrace_categories: "view"     # 视图系统
+            atrace_categories: "webview"  # WebView 相关
+            atrace_categories: "camera"   # 相机相关
+            atrace_categories: "dalvik"   # Java/Kotlin 代码执行
+            atrace_categories: "input"    # 输入事件
+            atrace_categories: "app"      # 应用层事件（包括我们的自定义 Trace）
+            atrace_categories: "res"      # 资源加载
+            atrace_categories: "memory"   # 内存相关
+            atrace_categories: "sched"    # binder 驱动
+
+            atrace_apps: "com.aidaole.easytrace"  # 指定要跟踪的应用包名
+        }
+    }
+}
+
+duration_ms: 100000

@@ -11,7 +11,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        fabnic2(35)
+        fabnic2(10)
     }
 
     fun fabnic2(n: Int): Int {

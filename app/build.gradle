@@ -1,13 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id 'com.aidaole.easytrace' version '1.0.0'
+//    id 'com.aidaole.easytrace'
 }
 
-easyTrace {
+//easyTrace {
 //    includePackages = ['com.aidaole.easytrace']
-    includeClasses = ['com.aidaole.easytrace.App']
-}
+//    includeClasses = ['com.aidaole.easytrace.App']
+//}
 
 android {
     namespace 'com.aidaole.easytrace'
