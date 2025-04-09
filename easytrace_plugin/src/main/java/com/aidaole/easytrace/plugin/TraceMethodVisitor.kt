@@ -14,7 +14,7 @@ class TraceMethodVisitor(
 
     override fun onMethodEnter() {
         // 插入 Trace.beginSection(String)
-        mv.visitLdcInsn("$className#$methodName")
+        mv.visitLdcInsn("$className#$methodName".takeLast(127))
         mv.visitMethodInsn(
             INVOKESTATIC,
             "android/os/Trace",
