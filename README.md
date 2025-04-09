@@ -21,6 +21,19 @@
 
 ### 配置插件
 
+**在settings.gradle中添加 jitpack.io 仓库**
+
+注意这里是添加到插件管理器下面
+
+```
+pluginManagement {
+    repositories {
+        // ...
+        maven { url = "https://jitpack.io" }
+    }
+}
+```
+
 **在项目根目录的 `build.gradle` 添加插件**
 
 ``` 
