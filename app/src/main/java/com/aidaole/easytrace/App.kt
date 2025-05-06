@@ -11,7 +11,12 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initSdk()
         fabnic2(10)
+    }
+
+    fun initSdk() {
+        Thread.sleep(2000)
     }
 
     fun fabnic2(n: Int): Int {
