@@ -1,6 +1,6 @@
 plugins {
     id 'java-library'
-    id 'org.jetbrains.kotlin.jvm'
+    alias(libs.plugins.jetbrains.kotlin.jvm)
     id 'java-gradle-plugin'
     id 'maven-publish'
 }
@@ -38,7 +38,7 @@ publishing {
             groupId = 'com.github.aidaole'
             artifactId = "easytrace"
             version = '1.0.0'
-            
+
             from components.java
         }
     }

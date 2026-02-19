@@ -11,7 +11,6 @@ pluginManagement {
         gradlePluginPortal()
         maven { url 'https://jitpack.io' }
     }
-    includeBuild("easytrace_plugin")
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -20,7 +19,11 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
+    versionCatalogs {
+        libs {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
 }
 
-rootProject.name = "EasyTrace"
-include ':app'
+rootProject.name = 'easytrace_plugin'
