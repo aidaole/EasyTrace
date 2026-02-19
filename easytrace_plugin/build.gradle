@@ -34,12 +34,10 @@ gradlePlugin {
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            groupId = 'com.github.aidaole'
-            artifactId = "easytrace"
-            version = project.findProperty("version") ?: "1.0.0"
-
-            from components.java
+        pluginMaven(MavenPublication) {
+            groupId = System.getenv("GROUP") ?: 'com.github.aidaole'
+            artifactId = System.getenv("ARTIFACT") ?: 'easytrace'
+            version = System.getenv("VERSION") ?: project.findProperty("version") ?: "1.0.0"
         }
     }
 }
