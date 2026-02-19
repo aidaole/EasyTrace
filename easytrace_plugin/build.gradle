@@ -5,6 +5,9 @@ plugins {
     id 'maven-publish'
 }
 
+group = System.getenv("GROUP") ?: 'com.github.aidaole'
+version = System.getenv("VERSION") ?: "1.0.0"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -35,9 +38,9 @@ gradlePlugin {
 publishing {
     publications {
         pluginMaven(MavenPublication) {
-            groupId = System.getenv("GROUP") ?: 'com.github.aidaole'
-            artifactId = System.getenv("ARTIFACT") ?: 'easytrace'
-            version = System.getenv("VERSION") ?: project.findProperty("version") ?: "1.0.0"
+            groupId = group
+            artifactId = 'easytrace'
+            version = project.version
         }
     }
 }
