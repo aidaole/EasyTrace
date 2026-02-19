@@ -1,12 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-    }
     dependencies {
-        classpath("com.github.aidaole:easytrace:1.0.0")
+        classpath("com.github.aidaole:easytrace:1.0.2")
     }
 }
 plugins {
