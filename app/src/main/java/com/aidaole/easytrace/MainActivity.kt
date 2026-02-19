@@ -5,6 +5,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +21,19 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         fabnic(20)
+
+        // Test Coroutine Tracing with custom scope
+        CoroutineScope(Dispatchers.Main).launch {
+            heavyWork()
+        }
+
+        // Test Exclusion
+        ExcludedClass().shouldNotBeTraced()
+    }
+
+    suspend fun heavyWork() {
+        delay(100)
+        println("Coroutine work done")
     }
 
     fun fabnic(n: Int): Int {

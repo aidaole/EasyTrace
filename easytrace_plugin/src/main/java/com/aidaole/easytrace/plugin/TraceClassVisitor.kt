@@ -4,20 +4,23 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
+private val COROUTINE_STATE_MACHINE_REGEX = Regex(""".*\$\d+$""")
+
 class TraceClassVisitor(
     nextVisitor: ClassVisitor,
-    private val className: String
+    private val className: String,
+    private val coroutineMode: CoroutineMode,
 ) : ClassVisitor(Opcodes.ASM9, nextVisitor) {
 
+    private val isCoroutineStateMachine: Boolean =
+        className.substringAfterLast('.').matches(COROUTINE_STATE_MACHINE_REGEX)
+
     override fun visitMethod(
-        access: Int,
-        name: String,
-        descriptor: String,
-        signature: String?,
-        exceptions: Array<out String>?
+        access: Int, name: String, descriptor: String,
+        signature: String?, exceptions: Array<out String>?
     ): MethodVisitor {
         val methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions)
-        
+
         // 跳过以下方法：
         // 1. 构造方法
         // 2. 静态初始化方法
@@ -27,6 +30,16 @@ class TraceClassVisitor(
         // 6. lambda 表达式
         if (shouldSkipMethod(access, name)) {
             return methodVisitor
+        }
+
+        if (isCoroutineStateMachine && name == "invokeSuspend") {
+            return when (coroutineMode) {
+                CoroutineMode.DISABLED -> methodVisitor
+                CoroutineMode.ENABLED -> {
+                    println("[EasyTrace] Adding coroutine trace to: $className#$name$descriptor")
+                    TraceMethodVisitor(methodVisitor, access, className, name, descriptor)
+                }
+            }
         }
 
         println("[EasyTrace] Adding trace to method: $className#$name$descriptor")
@@ -49,4 +62,4 @@ class TraceClassVisitor(
                 name.contains("$") || // lambda 表达式
                 name.length <= 2 // 过短的方法名
     }
-} 
+}
