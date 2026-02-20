@@ -37,7 +37,13 @@ class TraceClassVisitor(
                 CoroutineMode.DISABLED -> methodVisitor
                 CoroutineMode.ENABLED -> {
                     println("[EasyTrace] Adding coroutine trace to: $className#$name$descriptor")
-                    TraceMethodVisitor(methodVisitor, access, className, name, descriptor)
+                    CoroutineTraceMethodVisitor(
+                        methodVisitor,
+                        access,
+                        className,
+                        name,
+                        descriptor
+                    )
                 }
             }
         }

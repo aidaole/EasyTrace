@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +26,13 @@ class MainActivity : AppCompatActivity() {
         // Test Coroutine Tracing with custom scope
         CoroutineScope(Dispatchers.Main).launch {
             heavyWork()
+            val caught = runCatching { testExceptionIsolation() }.exceptionOrNull()
+            check(caught is IOException) { "Expected IOException, got $caught" }
+            val suppressed = caught.suppressed
+            check(suppressed.isEmpty()) {
+                "IOException must have no suppressed exceptions, got: ${suppressed.toList()}"
+            }
+            println("[EasyTrace] PASS: IOException has no suppressed exceptions")
         }
 
         // Test Exclusion
@@ -34,6 +42,22 @@ class MainActivity : AppCompatActivity() {
     suspend fun heavyWork() {
         delay(100)
         println("Coroutine work done")
+    }
+
+    /**
+     * Regression test for coroutine exception suppression bug.
+     *
+     * IllegalArgumentException is caught internally by runCatching — it must NOT
+     * appear as a suppressed exception on the IOException that escapes.
+     */
+    suspend fun testExceptionIsolation() {
+        // This exception is caught internally — never escapes invokeSuspend
+        runCatching { throw IllegalArgumentException("swallowed") }
+
+        delay(10)
+
+        // This is the real escaped exception — its suppressed list must be empty
+        throw IOException("real escaped exception")
     }
 
     fun fabnic(n: Int): Int {

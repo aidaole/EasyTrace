@@ -24,9 +24,7 @@ class TraceMethodVisitor(
     )
 
     override fun onMethodEnter() {
-        // Register the handler BEFORE placing tryStart so the ClassWriter
-        // knows about it when writing the exception table.
-        mv.visitTryCatchBlock(tryStart, tryEnd, handler, null) // null = catch all Throwables
+        // 插入 Trace.beginSection(String)
         mv.visitLdcInsn("$className#$methodName".takeLast(127))
         mv.visitMethodInsn(
             INVOKESTATIC,
@@ -51,6 +49,12 @@ class TraceMethodVisitor(
     }
 
     override fun visitMaxs(maxStack: Int, maxLocals: Int) {
+        // Register catch-all LAST — after all method body handlers have been registered
+        // during body visitation — so internal try-catch blocks have higher priority.
+        // The JVM scans the exception table top-to-bottom and takes the first match;
+        // if our catch-all were first, it would intercept exceptions before internal
+        // handlers (runCatching, try-catch) could catch them.
+        mv.visitTryCatchBlock(tryStart, tryEnd, handler, null)
         mv.visitLabel(tryEnd)
         mv.visitLabel(handler)
         // Explicit F_NEW frame required because AGP's ClassWriter uses COMPUTE_MAXS
