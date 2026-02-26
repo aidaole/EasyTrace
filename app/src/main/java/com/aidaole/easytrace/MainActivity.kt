@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
                 "IOException must have no suppressed exceptions, got: ${suppressed.toList()}"
             }
             println("[EasyTrace] PASS: IOException has no suppressed exceptions")
+
+            testEnumRunCatching()
         }
 
         // Test Exclusion
@@ -58,6 +60,35 @@ class MainActivity : AppCompatActivity() {
 
         // This is the real escaped exception — its suppressed list must be empty
         throw IOException("real escaped exception")
+    }
+
+    /**
+     * Mirrors GiftCardApiException.createExceptionType:
+     *   runCatching { ExceptionType.valueOf(unknownString) }.getOrNull()
+     *
+     * Before the fix: IllegalArgumentException escaped runCatching and crashed.
+     * After the fix:  runCatching catches it, getOrNull() returns null.
+     */
+    enum class PaymentErrorType {
+        CardExpired, CardInvalid, CardNotEnabled
+    }
+
+    fun parsePaymentErrorType(raw: String): PaymentErrorType? =
+        runCatching { PaymentErrorType.valueOf(raw) }.getOrNull()
+
+    suspend fun testEnumRunCatching() {
+        // Known value — must resolve correctly
+        val known = parsePaymentErrorType("CardExpired")
+        check(known == PaymentErrorType.CardExpired) { "Expected CardExpired, got $known" }
+
+        // Unknown value — mirrors "ApiOAuthFailedException" from the crash
+        // runCatching must swallow the IllegalArgumentException and return null
+        val unknown = parsePaymentErrorType("ApiOAuthFailedException")
+        check(unknown == null) {
+            "Expected null for unknown enum value, got $unknown"
+        }
+
+        println("[EasyTrace] PASS: runCatching swallowed IllegalArgumentException from Enum.valueOf")
     }
 
     fun fabnic(n: Int): Int {
