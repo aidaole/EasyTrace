@@ -36,7 +36,7 @@ pluginManagement {
 
 **在项目根目录的 `build.gradle` 添加插件**
 
-``` 
+```
 buildscript {
     dependencies {
         classpath("com.github.aidaole:EasyTrace:1.0.2")
@@ -54,10 +54,10 @@ plugins {
 
 easyTrace {
     // 指定包名, 可以指定多个以,分割. 包名下的所有方法都会被插桩, 插桩的方法会比较多
-    // includePackages = ['com.aidaole.easytrace'] 
+    // includePackages = ['com.aidaole.easytrace']
 
     // 指定类名, 可以指定多个以,分割. 类名下的所有方法都会被插桩
-    includeClasses = ['com.aidaole.easytrace.App', 'com.aidaole.easytrace.MainActivity'] 
+    includeClasses = ['com.aidaole.easytrace.App', 'com.aidaole.easytrace.MainActivity']
 }
 ```
 
@@ -80,7 +80,7 @@ EasyTrace git:(main) ✗ ./gradlew :app:installDebug
 
 可以直接将shell目录下的脚本都copy到你自己的项目中
 
-然后使用 `perfetto.sh 包名` 抓取trace日志, 
+然后使用 `perfetto.sh 包名` 抓取trace日志,
 
 注意: 需要手动启动一下应用, 抓取完trace后自己在终端 `ctrl+c` 结束抓取即可
 
@@ -97,3 +97,17 @@ perfetto ui 地址: [https://ui.perfetto.dev](https://ui.perfetto.dev)
 ![](images/README/2025-02-11-11-14-39.png)
 
 这里可以看到启动过程中 App 内内插桩的方法, 这里写了一个斐波那契数列的递归方法, 可以看到这个方法的耗时, 以及调用栈
+
+## 开发说明 (Development)
+
+本项目使用 Gradle Composite Builds (复合构建) 进行开发。
+
+- `easytrace_plugin`: 插件源码
+- `app`: 示例应用
+
+在开发过程中，`app` 模块会直接使用 `easytrace_plugin` 的源码进行构建，无需手动发布到 mavenLocal。
+修改插件代码后，直接运行 `app` 的构建任务即可生效。
+
+```bash
+./gradlew :app:assembleDebug
+```

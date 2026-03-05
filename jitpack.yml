@@ -1,2 +1,4 @@
 jdk:
   - openjdk17
+install:
+  - ./gradlew -p easytrace_plugin publishToMavenLocal

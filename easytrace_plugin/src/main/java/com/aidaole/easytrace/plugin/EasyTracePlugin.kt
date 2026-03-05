@@ -9,7 +9,7 @@ class EasyTracePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         // 创建扩展
         val extension = project.extensions.create("easyTrace", EasyTraceExtension::class.java)
-        
+
         val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
         androidComponents.onVariants { variant ->
             variant.instrumentation.transformClassesWith(
@@ -18,6 +18,8 @@ class EasyTracePlugin : Plugin<Project> {
             ) { params ->
                 params.includePackages.set(extension.includePackages)
                 params.includeClasses.set(extension.includeClasses)
+                params.excludePatterns.set(extension.excludePatterns)
+                params.coroutineMode.set(extension.coroutineMode)
             }
         }
     }
